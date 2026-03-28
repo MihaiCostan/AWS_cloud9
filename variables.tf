@@ -60,4 +60,3 @@ variable "common_tags" {
     Project   = "cloudpulse"
   }
 }
-//
