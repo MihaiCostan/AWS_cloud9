@@ -234,13 +234,20 @@ resource "aws_iam_instance_profile" "cloudpulse" {
   role = aws_iam_role.cloudpulse_ec2.name
 }
 
-resource "aws_instance" "cloudpulse" {
-  ami                         = data.aws_ami.amazon_linux.id
-  instance_type               = var.instance_type
-  subnet_id                   = aws_subnet.public.id
-  vpc_security_group_ids      = [aws_security_group.cloudpulse_sg.id]
-  iam_instance_profile        = aws_iam_instance_profile.cloudpulse.name
-  private_ip                  = "10.0.0.10"
+resource "aws_instance" "observability" {
+  ami                    = data.aws_ami.amazon_linux.id
+  instance_type          = "c7i-flex.large"
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.cloudpulse_sg.id]
+  private_ip             = "10.0.0.20"
+
+  root_block_device {
+    volume_size           = 20
+    volume_type           = "gp3"
+    delete_on_termination = true
+    encrypted             = true
+  }
+
   user_data_replace_on_change = true
 
   user_data = <<-EOF
